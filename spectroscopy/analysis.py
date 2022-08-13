@@ -2,8 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
 from uncertainties import unumpy, ufloat
+from uncertainties.umath import sqrt
 from uncertainties.unumpy import nominal_values as noms
 from uncertainties.unumpy import std_devs as devs
+from scipy.constants import c, h, electron_volt
 
 from data import *
 
@@ -64,3 +66,22 @@ plt.ylabel(r"$\delta_min$ $[1]$")
 plt.grid()
 plt.legend()
 plt.show()
+
+#%% hydrogen spectrum with prism
+
+hyd_delta_min = unumpy.uarray([], 5)
+hyd_wavelen = sqrt(C_tag/(hyd_delta_min - B_tag))
+
+nu = c/hyd_wavelen
+e_deltas = h*nu
+
+e_deltas = np.take_along_axis(e_deltas, np.argsort(noms(e_deltas)))
+
+exp_nf = np.array([3, 4, 5, 6, 7, 8])
+Ry = 13.6*electron_volt
+exp_e_deltas = h*c/(Ry*(1/4-1/(exp_nf**2)))
+
+nf = np.array([])
+calc_ry = h*c/(e_deltas*(1/4-1/(nf**2)))
+
+calc_ry_mean = np.mean(noms(calc_ry))
