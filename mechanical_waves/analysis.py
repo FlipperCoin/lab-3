@@ -1,6 +1,7 @@
 from uncertainties.umath import sqrt, floor
 import numpy as np
 import matplotlib.pyplot as plt # for plotting figures and setting their properties
+from scipy.stats import linregress
 from data import *
 
 def calc_bar_inertia(m, l):
@@ -29,7 +30,9 @@ for unit in [wide_unit, narrow_unit]:
 
 df_forced = max(np.abs(wide_unit["f_forced"] - [value.nominal_value for value in forced_modes.values()]))
 
+reg1 = linregress(list(forced_modes.keys()), [value.nominal_value for value in forced_modes.values()])
 plt.errorbar(forced_modes.keys(), [value.nominal_value for value in forced_modes.values()], yerr=[value.std_dev for value in forced_modes.values()], fmt="ro", label="measurements")
+plt.plot(forced_modes.keys(), reg1.intercept+reg1.slope*np.fromiter(forced_modes.keys(),dtype=float), label="fit")
 plt.plot(range(1, len(wide_unit["f_forced"])+1), [val.nominal_value for val in wide_unit["f_forced"]], label="prediction")
 plt.xlabel("mode number $[1]$")
 plt.ylabel(r"frequency $[\frac{1}{sec}]$")
@@ -39,8 +42,10 @@ plt.show()
 
 df_free = max(np.abs(wide_unit["f_free"][1:] - [value.nominal_value for value in free_modes.values()]))
 
+reg2 = linregress(list(free_modes.keys()), [value.nominal_value for value in free_modes.values()])
 plt.errorbar(free_modes.keys(),  [value.nominal_value for value in free_modes.values()], yerr=[value.std_dev for value in free_modes.values()], fmt="ro", label="measurements")
-plt.plot(range(1, len(wide_unit["f_free"])+1), [val.nominal_value for val in wide_unit["f_free"]], label="prediction")
+plt.plot(free_modes.keys(), reg2.intercept+reg2.slope*np.fromiter(free_modes.keys(), dtype=float), label="fit")
+plt.plot(range(2, len(wide_unit["f_free"])+1), [val.nominal_value for val in wide_unit["f_free"][1:]], label="prediction")
 plt.xlabel("mode number $[1]$")
 plt.ylabel(r"frequency $[\frac{1}{sec}]$")
 plt.grid()
