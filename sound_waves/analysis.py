@@ -24,26 +24,28 @@ f_res, A_res = f[res_idx], A[res_idx]
 f_res = 5000
 
 #%% part 1 - sound phase velocity in air
-#
-# x0 = 127
-# x = unumpy.uarray([127, 130.5,134, 137.4, 140.7,144.5,147.9,151.6, 155  ], 0.3)
-# phi = unumpy.uarray([0, 177, 0,   177   , 0    ,177  ,0    ,177  ,0  ], [1.5, 0.5, 3, 5, 3, 2,3,5])
-# reg = linregress(noms(x), noms(phi))
-#
-# plt.errorbar(noms(x), noms(phi), xerr=devs(x), yerr=devs(phi), fmt="bo", label="data")
-# plt.plot(noms(x), reg.intercept+reg.slope*noms(x), label="fit")
-# plt.legend()
-# plt.grid()
-# plt.xlabel(r"x $\left[ m \right]$")
-# plt.ylabel(r"phi $\left[ 1 \right]$")
-# plt.show()
-#
-# m = ufloat(reg.slope, reg.stderr)
-#
-# # deltaPhi/deltaX = 2pi/lambda
-# wave_len = 2*np.pi*1/m
-# # v = lambda*f
-# v_air_meas = wave_len*f_res
+
+x0 = 127e-2
+x = unumpy.uarray([127, 130.5, 134, 137.4, 140.7, 144.5, 147.9, 151.6, 155], 0.3)*1e-2
+x = x - x0
+phi = unumpy.uarray([0, 177, 360+0, 360+177, 720+0, 720+177, 1080+0, 1080+177, 360*4+0], [1.5, 0.5, 3, 5, 3, 2,  3, 5, 5])
+phi = unumpy.uarray(np.deg2rad(noms(phi)), devs(phi))
+reg = linregress(noms(x), noms(phi))
+
+plt.errorbar(noms(x), noms(phi), xerr=devs(x), yerr=devs(phi), fmt="bo", label="data")
+plt.plot(noms(x), reg.intercept+reg.slope*noms(x), label="fit")
+plt.legend()
+plt.grid()
+plt.xlabel(r"$\Delta$x $\left[ m \right]$")
+plt.ylabel(r"$\Delta\phi$ $\left[ radians \right]$")
+plt.show()
+
+m = ufloat(reg.slope, reg.stderr)
+
+# deltaPhi/deltaX = 2pi/lambda
+wave_len = 2*np.pi/m
+# v = lambda*f
+v_air_meas = wave_len*f_res
 
 # v_theo = sqrt(gamma*R*T/M)
 T_lab = ufloat(21.3, 0.3)
