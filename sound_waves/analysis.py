@@ -100,39 +100,65 @@ for g in gas.keys():
 gas["he"]["air_prop"] = (7*L/gas["he"]["v_theo"] - gas["he"]["T_pipe"]) / (7*L/gas["he"]["v_theo"] - 7*L/gas["air"]["v_theo"])
 gas["co2"]["air_prop"] = (7*L/gas["co2"]["v_theo"] - gas["co2"]["T_pipe"]) / (7*L/gas["co2"]["v_theo"] - 7*L/gas["air"]["v_theo"])
 
-#
-# #%% part 3 - resonance
-# f_modes = unumpy.uarray([], 0)
-# n = np.array([])
-#
-# reg2 = linregress(n, noms(f))
-# plt.errorbar(n, noms(f), yerr=devs(f), fmt="bo", label="data")
-# plt.plot(n, reg2.intercept + reg2.slope*n, label="fit")
-# plt.legend()
-# plt.grid()
-# plt.xlabel(r"n $\left[ 1 \right]$")
-# plt.ylabel(r"f $\left[ \frac{1}{sec} \right]$")
-# # f = v/lambda = nv/2L
-# m2 = ufloat(reg2.slope, reg2.stderr)
-# v_air_meas_2 = 2*L*m2
-#
-# f_n = np.arange(0, 5, 1)*v_air/2/L
-# plt.errorbar(n, noms(f_n), yerr=devs(f_n), fmt="ro", label="theoretical")
-# plt.show()
-#
-# #%% part 4 - standing waves
-# L2 = ufloat(20e-2, 0)
-# f_n_2 = np.arange(0, 5, 1)*v_air/2/L2
-# f_prim = f_n_2[3]
-#
-# x2 = unumpy.uarray([], 0)
-# A2 = unumpy.uarray([], 0)
-#
-# plt.errorbar(noms(x2), noms(A2), xerr=devs(x2), yerr=devs(A2), fmt="bo", label="data")
-# plt.grid()
-# plt.xlabel(r"x $\left[ m \right]$")
-# plt.ylabel(r"A $\left[ m \right]$")
-# plt.show()
-#
-#
-#
+
+#%% part 3 - resonance
+f_modes = unumpy.uarray([], 0)
+n = np.array([])
+
+reg2 = linregress(n, noms(f))
+plt.errorbar(n, noms(f), yerr=devs(f), fmt="bo", label="data")
+plt.plot(n, reg2.intercept + reg2.slope*n, label="fit")
+plt.legend()
+plt.grid()
+plt.xlabel(r"n $\left[ 1 \right]$")
+plt.ylabel(r"f $\left[ \frac{1}{sec} \right]$")
+# f = v/lambda = nv/2L
+m2 = ufloat(reg2.slope, reg2.stderr)
+v_air_meas_2 = 2*L*m2
+
+f_theory = n*v_air/2/L
+plt.errorbar(n, noms(f_theory), yerr=devs(f_theory), fmt="ro", label="theoretical velocity")
+plt.show()
+
+#%% part 4 - standing waves
+L2 = ufloat(20e-2, 0)
+f2 = ufloat(0, 0)
+
+x2 = unumpy.uarray([], 0)
+A2 = unumpy.uarray([], 0)
+
+plt.errorbar(noms(x2), noms(A2), xerr=devs(x2), yerr=devs(A2), fmt="bo", label="data")
+plt.grid()
+plt.xlabel(r"x $\left[ m \right]$")
+plt.ylabel(r"A $\left[ mV \right]$")
+plt.show()
+
+standing_wavelen = ufloat(0, 0)
+standing_a = ufloat(0, 0)
+standing_phi = ufloat(0, 0)
+
+x = np.linspace(0, x2[len(x2)-1].nominal_value, 1000)
+
+def theo_curve(x, lamb, a, phi0):
+    return 2*a*np.cos(2*np.pi*(L2/(2*lamb))-phi0/2)*np.cos(np.pi/lamb*(2*x-L2)+phi0/2)
+
+plt.errorbar(noms(x2), noms(A2), xerr=devs(x2), yerr=devs(A2), fmt="bo", label="data")
+plt.plot(x, theo_curve(x, standing_wavelen, standing_a, standing_phi), label="theoretical")
+plt.legend()
+plt.grid()
+plt.xlabel(r"x $\left[ m \right]$")
+plt.ylabel(r"A $\left[ mV \right]$")
+plt.show()
+
+v_air_meas_3 = standing_wavelen*f2
+
+x3 = unumpy.uarray([], 0)
+A3 = unumpy.uarray([], 0)
+
+plt.errorbar(noms(x3), noms(A3), xerr=devs(x3), yerr=devs(A3), fmt="bo", label="data")
+plt.grid()
+plt.xlabel(r"x $\left[ m \right]$")
+plt.ylabel(r"A $\left[ mV \right]$")
+plt.show()
+
+
