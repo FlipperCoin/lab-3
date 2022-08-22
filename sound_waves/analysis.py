@@ -123,6 +123,7 @@ f_theory = n*v_air/2/L
 plt.errorbar(n, noms(f_theory), yerr=devs(f_theory), fmt="ro", label="theoretical velocity")
 plt.legend()
 plt.title("normal modes frequency vs mode number n")
+plt.savefig("1.png")
 plt.show()
 
 #%% part 4 - standing waves
@@ -165,6 +166,7 @@ plt.grid()
 plt.xlabel(r"x $\left[ m \right]$")
 plt.ylabel(r"A $\left[ mV \right]$")
 plt.title("2 mic, standing wave")
+plt.savefig("2.png")
 plt.show()
 
 v_air_meas_3 = standing_wavelen*f2
@@ -178,6 +180,7 @@ plt.grid()
 plt.xlabel(r"x $\left[ m \right]$")
 plt.ylabel(r"A $\left[ mV \right]$")
 plt.title("1 mic, standing wave")
+plt.savefig("3.png")
 plt.show()
 
 
