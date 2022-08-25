@@ -70,51 +70,59 @@ I_5 = unumpy.uarray([], 0.001)
 d_min = ufloat(1.6e-2, 0.2e-2)
 lamb = 2*d_min
 
+
+def diff(arr):
+    return arr[len(arr)-1] - arr[0]
+
+d_lambda_g = unumpy.uarray([1.7,2,2.3,2.7,3],0.1) * 10 ** (-2)
 d1 = ufloat(2.3, 0.01) * 10 ** (-2)
 d1_min_array = unumpy.uarray([2.7 , 4.6, 6.4, 8.3, 10.1],0.1) * 10** (-2)
 d1_min = diff(d1_min_array) / (len(d1_min_array)-1)
-tmp = 1/(lamb**2)-1/(2*d1_min)**2
-lamb_g_min = sqrt(1/tmp)
+lamb_g_1_squared = 1/(lamb**2)-1/(2*d1_min)**2
+#lamb_g_1 = sqrt(1/tmp)
 
 d1_max_array = unumpy.uarray([3.7 , 5.5, 7.4, 9.3, 11.1],0.1) * 10** (-2)
 d1_max = diff(d1_max_array) / (len(d1_max_array)-1)
-tmp = 1/(lamb**2)-1/(2*d1_max)**2
-lamb_g_max1 = sqrt(1/tmp)
+#lamb_g_1_max_squared = 1/(lamb**2)-1/(2*d1_max)**2
+#lamb_g_max1 = sqrt(1/tmp)
 
 d2 = ufloat(2.7, 0.01) * 10 ** (-2)
 d2_max_array = unumpy.uarray([5.7, 7.4],0.1) * 10** (-2)
 d2_max = diff(d2_max_array) / (len(d2_max_array)-1)
-tmp = 1/(lamb**2)-1/(2*d2_max)**2
-lamb_g_max2 = sqrt(1/tmp)
+lamb_g_2_squared = 1/(lamb**2)-1/(2*d2_max)**2
+#lamb_g_2 = sqrt(1/tmp)
 
 d3 = ufloat(3, 0.01) * 10 ** (-2)
 d3_max_array = unumpy.uarray([6.4, 7.8],0.1) * 10** (-2)
 d3_max = diff(d3_max_array) / (len(d3_max_array)-1)
-tmp = 1/(lamb**2)-1/(2*d3_max)**2
-lamb_g_max3 = sqrt(1/tmp)
+lamb_g_3_squared = 1/(lamb**2)-1/(2*d3_max)**2
+#lamb_g_3 = sqrt(1/tmp)
 
 d4 = ufloat(2, 0.01) * 10 ** (-2)
 d4_max_array = unumpy.uarray([7, 9.2],0.1) * 10** (-2)
 d4_max = diff(d4_max_array) / (len(d4_max_array)-1)
-tmp = 1/(lamb**2)-1/(2*d4_max)**2
-lamb_g_max4 = sqrt(1/tmp)
+lamb_g_4_squared = 1/(lamb**2)-1/(2*d4_max)**2
+#lamb_g_4 = sqrt(1/tmp)
 
 d5 = ufloat(1.7, 0.01) * 10 ** (-2)
 d5_min_array = unumpy.uarray([6.3, 8.9],0.1) * 10** (-2)
 d5_min = diff(d5_min_array) / (len(d5_min_array)-1)
-tmp = 1/(lamb**2)-1/(2*d5_min)**2
-lamb_g_min5 = sqrt(1/tmp)
+lamb_g_5_squared = 1/(lamb**2)-1/(2*d5_min)**2
+#lamb_g_5 = sqrt(1/tmp)
 
-# node_deltas = unumpy.uarray([], [])
-# antinode_deltas = unumpy.uarray([], [])
-#
-# lamb_g_2 = unumpy.uarray([], [])
-# d3 = unumpy.uarray([], [])
-# y = 1/(lamb_g_2**2)
-# x = (1/(2*d3))**2
-# reg2 = linregress(x, y)
-# plt.errorbar(noms(x), noms(y), xerr=devs(x), yerr=devs(y), fmt='bo', label='data')
-# lamb_2 = ufloat(reg2.intercept, reg2.intercept_stderr)
+lamb_g = [lamb_g_1_squared, lamb_g_2_squared, lamb_g_3_squared,
+          lamb_g_4_squared, lamb_g_5_squared]
+
+y = 1/(np.power(lamb_g,2))
+x = 1/np.power((2*d_lambda_g),2)
+reg2 = linregress(noms(x), noms(y))
+plt.errorbar(noms(x), noms(y), xerr=devs(x), yerr=devs(y), fmt='bo', label='data')
+#lamb_2 = ufloat(reg2.intercept, reg2.intercept_stderr)
+plt.xlabel('$1/(2d^2$')
+plt.ylabel('$1/\lambda^2_g')
+plt.grid()
+plt.legend()
+plt.show()
 #
 L = 15e-2
 #
