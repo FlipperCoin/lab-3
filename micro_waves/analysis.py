@@ -151,3 +151,64 @@ ax.grid(True)
 plt.show()
 
 #
+
+#%% michelson interferometer
+
+x_mich = unumpy.uarray([], [])
+I_mich = unumpy.uarray([], [])
+plt.errorbar(noms(x_mich), noms(I_mich), devs(x_mich), devs(I_mich), fmt='bo')
+plt.xlabel('x [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+
+#%% fabry-perot interferometer
+
+d1_fp_1 = ufloat(0, 0)
+min_points_count_1 = 10
+d2_fp_1 = ufloat(0, 0)
+
+# d2-d1=min_points*(lamb/2)
+lamb_fp_1 = 2 * (d2_fp_1 - d1_fp_1) / min_points_count_1
+
+d1_fp_2 = ufloat(0, 0)
+min_points_count_2 = 10
+d2_fp_2 = ufloat(0, 0)
+
+lamb_fp_2 = 2 * (d2_fp_2 - d1_fp_2) / min_points_count_2
+
+#%% lloyd interferometer
+
+h1 = ufloat(0, 0)
+I_h1 = ufloat(0, 0)
+h1_neighbours = unumpy.uarray([], [])
+I_h1_neighbours = unumpy.uarray([], [])
+
+h2 = ufloat(0, 0)
+I_h2 = ufloat(0, 0)
+h2_neighbours = unumpy.uarray([], [])
+I_h2_neighbours = unumpy.uarray([], [])
+
+h_max_neighbours = unumpy.uarray([], [])
+I_h_max_neighbours = unumpy.uarray([], [])
+
+h = np.concatenate(h1_neighbours, h2_neighbours, h_max_neighbours)  # unumpy.uarray([], [])
+I_lloyd = np.concatenate(I_h1_neighbours, I_h2_neighbours, I_h_max_neighbours)  # unumpy.uarray([], [])
+
+plt.errorbar(noms(h), noms(I_lloyd), devs(h), devs(I_lloyd), fmt='bo', label='data')
+plt.xlabel('h [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+
+# take into account 10 cm of effective source & detector
+d1_lloyd = ufloat(0, 0)
+AC = 2*d1_lloyd
+
+# calculate lambda somehow? (maybe find several minimums and maximums, similar to FP)
+# lamb_lloyd =
+
+# random calculations (prob not needed)
+lamb_manufacturer = 2.8e-2
+wavelength_delta = (unumpy.sqrt((AC/2)**2 + h**2)*2-AC) / lamb_manufacturer
+phase_delta = wavelength_delta*2*np.pi
