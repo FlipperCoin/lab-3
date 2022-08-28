@@ -9,11 +9,11 @@ from scipy.stats import linregress
 #%% grid polarizer
 
 # deltaLines = 4.75 degrees, dev = 0.25
-angle_delta = ufloat(360/72,0.25)
+angle_delta = ufloat(360/72, 0.25)
 # 17 lines per 1/4
-theta_1 = unumpy.uarray([0, 5, 10, 15, 18, 23, 28, 33, 36, 41, 46, 51, 54, 59, 64, 69, 72 ], 1) * angle_delta
+theta_1 = unumpy.uarray([0, 5, 10, 15, 18, 23, 28, 33, 36, 41, 46, 51, 54, 59, 64, 69, 72], 1) * angle_delta
 theta_1 = unumpy.uarray(np.deg2rad(noms(theta_1)), np.deg2rad(devs(theta_1)))
-I_1 = unumpy.uarray([0, 0.076, 0.211, 0.272, 0.283, 0.263, 0.183 , 0.039, 0.0001, 0.098, 0.219, 0.275, 0.0282, 0.253, 0.171, 0.036, 0],
+I_1 = unumpy.uarray([0, 0.076, 0.211, 0.272, 0.283, 0.263, 0.183, 0.039, 0.0001, 0.098, 0.219, 0.275, 0.282, 0.253, 0.171, 0.036, 0],
                     [0.001, 0.002, 0.002, 0.001, 0.001, 0.001, 0.002, 0.001, 0.0001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.0001 ])
 
 x1 = unumpy.cos(theta_1)**2
@@ -21,7 +21,7 @@ reg = linregress(noms(x1), noms(I_1))
 plt.errorbar(noms(x1), noms(I_1), xerr=devs(x1), yerr=devs(I_1), fmt='bo', label='data')
 plt.plot(noms(x1), reg.intercept + reg.slope*noms(x1), label='fit')
 plt.xlabel(r'$cos^2(\theta)$')
-plt.ylabel(r'I $\left[ W \right]$')
+plt.ylabel(r'V $\left[ V \right]$')
 plt.grid()
 plt.legend()
 plt.show()
@@ -32,11 +32,11 @@ I_2 = unumpy.uarray([0.021, 0.009, 0.03, 0.135,  0.214, 0.253, 0.261],
                     [0.001, 0.001, 0.002, 0.001, 0.001, 0.001, 0.001])
 
 x2 = unumpy.cos(theta_2)**4
-reg = linregress(noms(x2), noms(I_2))
+reg2 = linregress(noms(x2), noms(I_2))
 plt.errorbar(noms(x2), noms(I_2), xerr=devs(x2), yerr=devs(I_2), fmt='bo', label='data')
-plt.plot(noms(x2), reg.intercept + reg.slope*noms(x2), label='fit')
+plt.plot(noms(x2), reg2.intercept + reg2.slope*noms(x2), label='fit')
 plt.xlabel(r'$cos^4(\theta)$')
-plt.ylabel(r'I $\left[ W \right]$')
+plt.ylabel(r'V $\left[ V \right]$')
 plt.grid()
 plt.legend()
 plt.show()
@@ -44,85 +44,86 @@ plt.show()
 # #%% waveguide
 
 # perpendicular
-d1 = unumpy.uarray([1.5, 1.8,    2,      2.5  , 3,      3.3,       3.6,    4,    4.2,  2.9], 0.3) * 10**(-2)
-I_3 = unumpy.uarray([0.25,0.243  ,0.274, 0.235, 0.286,  0.362,    0.375,  0.376,  0.39   ,0.252], 0.002)
+d1 = unumpy.uarray([1.5, 1.8, 2, 2.5, 3, 3.3, 3.6, 4, 4.2, 2.9], 0.2) * 1e-2
+I_3 = unumpy.uarray([0.25, 0.243 , 0.274, 0.235, 0.286, 0.362, 0.375, 0.376, 0.39, 0.252], 0.002)
 plt.errorbar(noms(d1), noms(I_3), xerr=devs(d1), yerr=devs(I_3), fmt='bo', label='data')
+plt.xlabel(r'd $\left[ m \right] $')
+plt.ylabel(r'V $\left[ V \right]$')
 plt.grid()
 plt.show()
 #
-theta_3 = unumpy.uarray([0, 5, 10, 15, 20, 25, 30,                 35,  40,       45,      50,      55], 1) * angle_delta
+theta_3 = unumpy.uarray([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], 1) * angle_delta
 theta_3 = unumpy.uarray(np.deg2rad(noms(theta_3)), np.deg2rad(devs(theta_3)))
-I_4 = unumpy.uarray([0.003,0.143, 0.33, 0.357, 0.379, 0.356, 0.172, 0.004, 0.18,  0.335,   0.365 ,  0.375], 0.002)
+I_4 = unumpy.uarray([0.003, 0.143, 0.33, 0.357, 0.379, 0.356, 0.172, 0.004, 0.18, 0.335, 0.365, 0.375], 0.002)
 
 fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-ax.plot(noms(theta_3), noms(I_4), 'bo')
+ax.errorbar(noms(theta_3), noms(I_4), xerr=devs(theta_3), yerr=devs(I_4), fmt='bo')
 ax.grid(True)
 plt.show()
 
 # # parallel
-d2 = unumpy.uarray([1.7,2, 2.5, 2.7, 3, 3.5, 4, 4.5, 5, 3.2 ], 0.3) * 10**(-2)
+d2 = unumpy.uarray([1.7, 2, 2.5, 2.7, 3, 3.5, 4, 4.5, 5, 3.2], 0.2) * 1e-2
+I_5 = unumpy.uarray([0.265, 0.326, 0.39, 0.367, 0.403, 0.414, 0.441, 0.443, 0.428, 0.405 ], 0.001)
+plt.errorbar(noms(d2), noms(I_5), xerr=devs(d2), yerr=devs(I_5), fmt='bo', label='data')
+plt.xlabel(r'd $\left[ m \right] $')
+plt.ylabel(r'V $\left[ V \right]$')
+plt.grid()
+plt.show()
 
-I_5 = unumpy.uarray([0.265,0.326, 0.39, 0.367, 0.403, 0.414, 0.441, 0.443, 0.428, 0.405 ], 0.001)
-
-I_5 = unumpy.uarray([], 0.001)
-# plt.errorbar(noms(d2), noms(I_5), xerr=devs(d2), yerr=devs(I_5), fmt='bo', label='data')
-# plt.grid()
-# plt.show()
-#
 d_min = ufloat(1.6e-2, 0.2e-2)
 lamb = 2*d_min
-
+lamb_manu = 2.8e-2
 
 def diff(arr):
     return arr[len(arr)-1] - arr[0]
 
-d_lambda_g = unumpy.uarray([1.7,2,2.3,2.7,3],0.1) * 1e-2
 d1 = ufloat(2.3, 0.01) * 1e-2
-d1_min_array = unumpy.uarray([2.7 , 4.6, 6.4, 8.3, 10.1],0.1) * 1e-2
-d1_min = diff(d1_min_array) / (len(d1_min_array)-1)
-lamb_g_1_squared = 1/(lamb**2)-1/(2*d1_min)**2
+d1_min_array = unumpy.uarray([2.7, 4.6, 6.4, 8.3, 10.1], 0.1) * 1e-2
+lamb_d1 = 2 * diff(d1_min_array) / (len(d1_min_array)-1)
+lamb_g_1_squared = 1/(lamb_d1**2)-1/(2*d1)**2
 #lamb_g_1 = sqrt(1/tmp)
 
-d1_max_array = unumpy.uarray([3.7 , 5.5, 7.4, 9.3, 11.1],0.1) * 10** (-2)
+d1_max_array = unumpy.uarray([3.7, 5.5, 7.4, 9.3, 11.1], 0.1) * 1e-2
 d1_max = diff(d1_max_array) / (len(d1_max_array)-1)
 #lamb_g_1_max_squared = 1/(lamb**2)-1/(2*d1_max)**2
 #lamb_g_max1 = sqrt(1/tmp)
 
-d2 = ufloat(2.7, 0.01) * 10 ** (-2)
-d2_max_array = unumpy.uarray([5.7, 7.4],0.1) * 10** (-2)
-d2_max = diff(d2_max_array) / (len(d2_max_array)-1)
-lamb_g_2_squared = 1/(lamb**2)-1/(2*d2_max)**2
+d2 = ufloat(2.7, 0.01) * 1e-2
+d2_max_array = unumpy.uarray([5.7, 7.4], 0.1) * 1e-2
+lamb_d2 = 2 * diff(d2_max_array) / (len(d2_max_array)-1)
+lamb_g_2_squared = 1/(lamb_d2**2)-1/(2*d2)**2
 #lamb_g_2 = sqrt(1/tmp)
 
-d3 = ufloat(3, 0.01) * 10 ** (-2)
-d3_max_array = unumpy.uarray([6.4, 7.8],0.1) * 10** (-2)
-d3_max = diff(d3_max_array) / (len(d3_max_array)-1)
-lamb_g_3_squared = 1/(lamb**2)-1/(2*d3_max)**2
+d3 = ufloat(3, 0.01) * 1e-2
+d3_max_array = unumpy.uarray([6.4, 7.8], 0.1) * 1e-2
+lamb_d3 = 2 * diff(d3_max_array) / (len(d3_max_array)-1)
+lamb_g_3_squared = 1/(lamb_d3**2)-1/(2*d3)**2
 #lamb_g_3 = sqrt(1/tmp)
 
-d4 = ufloat(2, 0.01) * 10 ** (-2)
-d4_max_array = unumpy.uarray([7, 9.2],0.1) * 10** (-2)
-d4_max = diff(d4_max_array) / (len(d4_max_array)-1)
-lamb_g_4_squared = 1/(lamb**2)-1/(2*d4_max)**2
+d4 = ufloat(2, 0.01) * 1e-2
+d4_max_array = unumpy.uarray([7, 9.2], 0.1) * 1e-2
+lamb_d4 = 2 * diff(d4_max_array) / (len(d4_max_array)-1)
+lamb_g_4_squared = 1/(lamb_d4**2)-1/(2*d4)**2
 #lamb_g_4 = sqrt(1/tmp)
 
-d5 = ufloat(1.7, 0.01) * 10 ** (-2)
-d5_min_array = unumpy.uarray([6.3, 8.9],0.1) * 10** (-2)
-d5_min = diff(d5_min_array) / (len(d5_min_array)-1)
-lamb_g_5_squared = 1/(lamb**2)-1/(2*d5_min)**2
+d5 = ufloat(1.7, 0.01) * 1e-2
+d5_min_array = unumpy.uarray([6.3, 8.9], 0.1) * 1e-2
+lamb_d5 = 2 * diff(d5_min_array) / (len(d5_min_array)-1)
+lamb_g_5_squared = 1/(lamb_d5**2)-1/(2*d5)**2
 #lamb_g_5 = sqrt(1/tmp)
 
-lamb_g = [lamb_g_1_squared, lamb_g_2_squared, lamb_g_3_squared,
-          lamb_g_4_squared, lamb_g_5_squared]
+lamb_g = np.array([lamb_g_1_squared, lamb_g_2_squared, lamb_g_3_squared,
+          lamb_g_4_squared, lamb_g_5_squared])
+d_lambda_g = np.array([d1, d2, d3, d4, d5])
 
-y = 1/(np.power(lamb_g, 2))
-x = 1/np.power((2*d_lambda_g), 2)
+y = lamb_g
+x = 1/((2*d_lambda_g)**2)
 reg2 = linregress(noms(x), noms(y))
 plt.errorbar(noms(x), noms(y), xerr=devs(x), yerr=devs(y), fmt='bo', label='data')
-#lamb_2 = ufloat(reg2.intercept, reg2.intercept_stderr)
-plt.xlabel(r'$1/(2d^2$')
-plt.ylabel(r'$1/\lambda^2_g')
-plt.title('bla')
+plt.plot(noms(x), noms(x)*reg2.slope+reg2.intercept, label='fit')
+lamb_2 = sqrt(1/ufloat(reg2.intercept, reg2.intercept_stderr))
+plt.xlabel(r'$\frac{1}{2d^2}$')
+plt.ylabel(r'$\frac{1}{\lambda^2_g}$')
 plt.grid()
 plt.legend()
 plt.show()
