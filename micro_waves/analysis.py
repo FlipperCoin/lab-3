@@ -20,8 +20,8 @@ x1 = unumpy.cos(theta_1)**2
 reg = linregress(noms(x1), noms(I_1))
 plt.errorbar(noms(x1), noms(I_1), xerr=devs(x1), yerr=devs(I_1), fmt='bo', label='data')
 plt.plot(noms(x1), reg.intercept + reg.slope*noms(x1), label='fit')
-plt.xlabel('cos^2(theta)')
-plt.ylabel('I')
+plt.xlabel(r'$cos^2(\theta)$')
+plt.ylabel(r'I $\left[ W \right]$')
 plt.grid()
 plt.legend()
 plt.show()
@@ -35,6 +35,8 @@ x2 = unumpy.cos(theta_2)**4
 reg = linregress(noms(x2), noms(I_2))
 plt.errorbar(noms(x2), noms(I_2), xerr=devs(x2), yerr=devs(I_2), fmt='bo', label='data')
 plt.plot(noms(x2), reg.intercept + reg.slope*noms(x2), label='fit')
+plt.xlabel(r'$cos^4(\theta)$')
+plt.ylabel(r'I $\left[ W \right]$')
 plt.grid()
 plt.legend()
 plt.show()
@@ -74,9 +76,9 @@ lamb = 2*d_min
 def diff(arr):
     return arr[len(arr)-1] - arr[0]
 
-d_lambda_g = unumpy.uarray([1.7,2,2.3,2.7,3],0.1) * 10 ** (-2)
-d1 = ufloat(2.3, 0.01) * 10 ** (-2)
-d1_min_array = unumpy.uarray([2.7 , 4.6, 6.4, 8.3, 10.1],0.1) * 10** (-2)
+d_lambda_g = unumpy.uarray([1.7,2,2.3,2.7,3],0.1) * 1e-2
+d1 = ufloat(2.3, 0.01) * 1e-2
+d1_min_array = unumpy.uarray([2.7 , 4.6, 6.4, 8.3, 10.1],0.1) * 1e-2
 d1_min = diff(d1_min_array) / (len(d1_min_array)-1)
 lamb_g_1_squared = 1/(lamb**2)-1/(2*d1_min)**2
 #lamb_g_1 = sqrt(1/tmp)
@@ -113,13 +115,14 @@ lamb_g_5_squared = 1/(lamb**2)-1/(2*d5_min)**2
 lamb_g = [lamb_g_1_squared, lamb_g_2_squared, lamb_g_3_squared,
           lamb_g_4_squared, lamb_g_5_squared]
 
-y = 1/(np.power(lamb_g,2))
-x = 1/np.power((2*d_lambda_g),2)
+y = 1/(np.power(lamb_g, 2))
+x = 1/np.power((2*d_lambda_g), 2)
 reg2 = linregress(noms(x), noms(y))
 plt.errorbar(noms(x), noms(y), xerr=devs(x), yerr=devs(y), fmt='bo', label='data')
 #lamb_2 = ufloat(reg2.intercept, reg2.intercept_stderr)
-plt.xlabel('$1/(2d^2$')
-plt.ylabel('$1/\lambda^2_g')
+plt.xlabel(r'$1/(2d^2$')
+plt.ylabel(r'$1/\lambda^2_g')
+plt.title('bla')
 plt.grid()
 plt.legend()
 plt.show()
@@ -158,65 +161,184 @@ ax.plot(noms(theta_lin), noms(I_lin), 'bo')
 ax.grid(True)
 plt.show()
 
-#
-
 #%% michelson interferometer
 
-x_mich = unumpy.uarray([], [])
-I_mich = unumpy.uarray([], [])
+x_max_first = 0.76
+x_mich = unumpy.uarray([0.706, 0.714, 0.723, 0.729, 0.735, 0.740, 0.745, 0.754, 0.759, 0.768], 0.001)
+I_mich = unumpy.uarray([0.22, 0.00, 0.206, 0.0003, 0.205, 0.0003, 0.202, 0.0003, 0.19, 0.0003],
+                       [0.01, 0.01, 0.003, 0.0005, 0.005, 0.0003, 0.003, 0.0005, 0.01, 0.0004])
 plt.errorbar(noms(x_mich), noms(I_mich), devs(x_mich), devs(I_mich), fmt='bo')
 plt.xlabel('x [m]')
 plt.ylabel('I [W]')
 plt.grid()
 plt.show()
 
+lambda_mich = (x_mich[len(x_mich)-1] - x_mich[0]) * 4/9
+
 #%% fabry-perot interferometer
 
-d1_fp_1 = ufloat(0, 0)
+d1_fp_1_x1 = 52.9
+d1_fp_1_x2 = 46.9
+d1_fp_1 = ufloat(d1_fp_1_x1-d1_fp_1_x2, 0.1)*1e-2
 min_points_count_1 = 10
-d2_fp_1 = ufloat(0, 0)
+d2_fp_1_x1 = 67.1
+d2_fp_1_x2 = 46.9
+d2_fp_1 = ufloat(d2_fp_1_x1-d2_fp_1_x2, 0.1)*1e-2
 
 # d2-d1=min_points*(lamb/2)
 lamb_fp_1 = 2 * (d2_fp_1 - d1_fp_1) / min_points_count_1
 
-d1_fp_2 = ufloat(0, 0)
+d1_fp_2_x1 = 56.0
+d1_fp_2_x2 = 46.9
+d1_fp_2 = ufloat(d1_fp_2_x1-d1_fp_2_x2, 0.1)*1e-2
 min_points_count_2 = 10
-d2_fp_2 = ufloat(0, 0)
+d2_fp_2_x1 = 69.9
+d2_fp_2_x2 = 46.9
+d2_fp_2 = ufloat(d2_fp_2_x1-d2_fp_2_x2, 0.1)*1e-2
 
 lamb_fp_2 = 2 * (d2_fp_2 - d1_fp_2) / min_points_count_2
 
 #%% lloyd interferometer
 
-h1 = ufloat(0, 0)
-I_h1 = ufloat(0, 0)
-h1_neighbours = unumpy.uarray([], [])
-I_h1_neighbours = unumpy.uarray([], [])
+h_base = 60e-2 - 5.5e-2
+h1 = ufloat(61.5e-2, 0.1e-2) - h_base
+I_h1 = ufloat(0.138, 0.003)
+h1_neighbours = unumpy.uarray([61.2e-2, 61.3e-2, 61.4e-2, 61.5e-2, 61.6e-2, 61.7e-2, 61.8e-2],
+                              [0.1e-2, 0.1e-2, 0.1e-2, 0.1e-2, 0.1e-2, 0.1e-2, 0.1e-2]) - h_base
+I_h1_neighbours = unumpy.uarray([0.144, 0.143, 0.137, 0.136, 0.137, 0.138, 0.140],
+                                [0.002, 0.001, 0.001, 0.002, 0.002, 0.001, 0.001])
 
-h2 = ufloat(0, 0)
-I_h2 = ufloat(0, 0)
-h2_neighbours = unumpy.uarray([], [])
-I_h2_neighbours = unumpy.uarray([], [])
-
-h_max_neighbours = unumpy.uarray([], [])
-I_h_max_neighbours = unumpy.uarray([], [])
-
-h = np.concatenate(h1_neighbours, h2_neighbours, h_max_neighbours)  # unumpy.uarray([], [])
-I_lloyd = np.concatenate(I_h1_neighbours, I_h2_neighbours, I_h_max_neighbours)  # unumpy.uarray([], [])
-
-plt.errorbar(noms(h), noms(I_lloyd), devs(h), devs(I_lloyd), fmt='bo', label='data')
+plt.errorbar(noms(h1_neighbours),
+             noms(I_h1_neighbours),
+             xerr=devs(h1_neighbours),
+             yerr=devs(I_h1_neighbours), fmt='bo', label='data')
 plt.xlabel('h [m]')
 plt.ylabel('I [W]')
 plt.grid()
 plt.show()
 
+h2 = ufloat(66.2e-2, 0.1e-2) - h_base
+I_h2 = ufloat(0.173, 0.001)
+h2_neighbours = unumpy.uarray([65.5e-2, 65.6e-2, 65.7e-2, 65.8e-2, 65.9e-2, 66.0e-2, 66.1e-2, 66.2e-2, 66.3e-2, 66.4e-2],
+                              0.1e-2) - h_base
+I_h2_neighbours = unumpy.uarray([0.174, 0.173, 0.172, 0.171, 0.171, 0.171, 0.172, 0.173, 0.175, 0.177],
+                                [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001])
+
+plt.errorbar(noms(h2_neighbours),
+             noms(I_h2_neighbours),
+             xerr=devs(h2_neighbours),
+             yerr=devs(I_h2_neighbours), fmt='bo', label='data')
+plt.xlabel('h [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+
+h_max_neighbours = unumpy.uarray([64.2e-2, 64.1e-2, 64e-2, 63.9e-2, 63.8e-2, 63.7e-2, 63.6e-2, 63.5e-2, 63.4e-2, ], 0.1e-2) - h_base
+I_h_max_neighbours = unumpy.uarray([0.211, 0.212, 0.212, 0.212, 0.213, 0.213, 0.212, 0.210, 0.207],
+                                   [0.001, 0.001, 0.001, 0.001, 0.001, 0.002, 0.003, 0.001, 0.001])
+
+plt.errorbar(noms(h_max_neighbours),
+             noms(I_h_max_neighbours),
+             xerr=devs(h_max_neighbours),
+             yerr=devs(I_h_max_neighbours), fmt='bo', label='data')
+plt.xlabel('h [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+#
+# h = np.concatenate([h1_neighbours, h2_neighbours, h_max_neighbours])  # unumpy.uarray([], [])
+# I_lloyd = np.concatenate([I_h1_neighbours, I_h2_neighbours, I_h_max_neighbours])  # unumpy.uarray([], [])
+#
+# plt.errorbar(noms(h), noms(I_lloyd), devs(h), devs(I_lloyd), fmt='bo', label='data')
+# plt.xlabel('h [m]')
+# plt.ylabel('I [W]')
+# plt.grid()
+# plt.show()
+
 # take into account 10 cm of effective source & detector
-d1_lloyd = ufloat(0, 0)
+d1_lloyd = ufloat(36, 1)*1e-2
 AC = 2*d1_lloyd
 
 # calculate lambda somehow? (maybe find several minimums and maximums, similar to FP)
-# lamb_lloyd =
+min1 = ufloat(0.070, 0.001)
+min2 = ufloat(0.114, 0.001)
+path1 = 2*sqrt(d1_lloyd**2 + min1**2)
+path2 = 2*sqrt(d1_lloyd**2 + min2**2)
+lamb_lloyd = path2-path1
 
-# random calculations (prob not needed)
-lamb_manufacturer = 2.8e-2
-wavelength_delta = (unumpy.sqrt((AC/2)**2 + h**2)*2-AC) / lamb_manufacturer
-phase_delta = wavelength_delta*2*np.pi
+min1 = ufloat(0.070, 0.001)
+max1 = ufloat(0.093, 0.001)
+path1 = 2*sqrt(d1_lloyd**2 + min1**2)
+path2 = 2*sqrt(d1_lloyd**2 + max1**2)
+lamb_lloyd2 = 2*(path2-path1)
+
+# asymmetric
+min1 = ufloat(0.070, 0.001)
+min2 = ufloat(0.114, 0.001)
+path1 = sqrt(d1_lloyd**2 + min1**2) + sqrt((d1_lloyd-1e-2)**2 + min1**2)
+path2 = sqrt(d1_lloyd**2 + min2**2) + sqrt((d1_lloyd-1e-2)**2 + min2**2)
+lamb_lloyd3 = path2-path1
+
+
+#%% lloyd interferometer 2
+
+h_base = 60e-2 - 5.5e-2
+h1_neighbours = unumpy.uarray([61.8, 61.7, 61.6, 61.9, 62],
+                              0.1e-2) - h_base
+I_h1_neighbours = unumpy.uarray([0.15, 0.155, 0.156, 0.151, 0.152],
+                                [0.003,0.002, 0.002, 0.002, 0.002])
+
+plt.errorbar(noms(h1_neighbours),
+             noms(I_h1_neighbours),
+             xerr=devs(h1_neighbours),
+             yerr=devs(I_h1_neighbours), fmt='bo', label='data')
+plt.xlabel('h [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+
+h2_neighbours = unumpy.uarray([63.9,64, 64.1, 64.2, 64.3],
+                              0.1e-2) - h_base
+I_h2_neighbours = unumpy.uarray([0.215,0.218, 0.217, 0.218, 0.217  ],
+                                [0.002, 0.002, 0.002, 0.002, 0.002])
+
+plt.errorbar(noms(h2_neighbours),
+             noms(I_h2_neighbours),
+             xerr=devs(h2_neighbours),
+             yerr=devs(I_h2_neighbours), fmt='bo', label='data')
+plt.xlabel('h [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+
+h_max_neighbours = unumpy.uarray([],
+                                 0.1e-2) - h_base
+I_h_max_neighbours = unumpy.uarray([],
+                                   [])
+
+plt.errorbar(noms(h_max_neighbours),
+             noms(I_h_max_neighbours),
+             xerr=devs(h_max_neighbours),
+             yerr=devs(I_h_max_neighbours), fmt='bo', label='data')
+plt.xlabel('h [m]')
+plt.ylabel('I [W]')
+plt.grid()
+plt.show()
+
+
+# take into account 10 cm of effective source & detector
+d2_lloyd = ufloat(35, 1)*1e-2
+AC = 2*d2_lloyd
+
+# calculate lambda somehow? (maybe find several minimums and maximums, similar to FP)
+min1 = ufloat(0.070, 0.001)
+min2 = ufloat(0.114, 0.001)
+path1 = 2*sqrt(d2_lloyd**2 + min1**2)
+path2 = 2*sqrt(d2_lloyd**2 + min2**2)
+lamb_lloyd = path2-path1
+
+min1 = ufloat(0.070, 0.001)
+max1 = ufloat(0.093, 0.001)
+path1 = 2*sqrt(d2_lloyd**2 + min1**2)
+path2 = 2*sqrt(d2_lloyd**2 + max1**2)
+lamb_lloyd2 = 2*(path2-path1)
