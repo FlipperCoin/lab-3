@@ -5,6 +5,7 @@ from uncertainties.unumpy import std_devs as devs
 from uncertainties.umath import sqrt
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
+from scipy.integrate import cumtrapz
 
 # %% grid polarizer
 
@@ -49,21 +50,25 @@ plt.show()
 d1 = unumpy.uarray([1.5, 1.8, 2, 2.5, 3, 3.3, 3.6, 4, 4.2, 2.9], 0.2) * 1e-2
 I_3 = unumpy.uarray([0.25, 0.243, 0.274, 0.235, 0.286, 0.362, 0.375, 0.376, 0.39, 0.252], 0.002)
 plt.errorbar(noms(d1), noms(I_3), xerr=devs(d1), yerr=devs(I_3), fmt='bo', label='data')
+reg_perp = linregress(noms(d1), noms(I_3))
+plt.plot(noms(d1), noms(d1)*reg_perp.slope+reg_perp.intercept, label='fit')
 plt.xlabel(r'd $\left[ m \right] $')
 plt.ylabel(r'V $\left[ V \right]$')
+plt.legend()
 plt.grid()
 plt.show()
 #
-theta_3 = unumpy.uarray([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], 1) * angle_delta
+theta_3 = unumpy.uarray([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], 1) * angle_delta - 90
 theta_3 = unumpy.uarray(np.deg2rad(noms(theta_3)), np.deg2rad(devs(theta_3)))
 I_4 = unumpy.uarray([0.003, 0.143, 0.33, 0.357, 0.379, 0.356, 0.172, 0.004, 0.18, 0.335, 0.365, 0.375], 0.002)
 
 fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
 ax.errorbar(noms(theta_3), noms(I_4), xerr=devs(theta_3), yerr=devs(I_4), fmt='bo')
+# ax.plot(noms(theta_3), np.max(noms(I_4))*np.abs(np.sin(noms(theta_3))))
 ax.grid(True)
 plt.show()
 
-# # parallel
+# parallel
 d2 = unumpy.uarray([1.7, 2, 2.5, 2.7, 3, 3.5, 4, 4.5, 5, 3.2], 0.2) * 1e-2
 I_5 = unumpy.uarray([0.265, 0.326, 0.39, 0.367, 0.403, 0.414, 0.441, 0.443, 0.428, 0.405], 0.001)
 plt.errorbar(noms(d2), noms(I_5), xerr=devs(d2), yerr=devs(I_5), fmt='bo', label='data')
@@ -155,26 +160,64 @@ d_lin3 = calc_d(4 * np.pi)
 #
 I_circ = unumpy.uarray([0.31, 0.347, 0.346, 0.316, 0.361, 0.323, 0.311, 0.309, 0.317, 0.34, 0.34, 0.334, 0.332, 0.354],
                        0.003)
-theta_circ = unumpy.uarray(range(0, 4 * len(noms(I_circ) + 4), 4), 1) * angle_delta
+theta_circ = unumpy.uarray(range(0, 4 * len(noms(I_circ) + 4), 4), 1) * angle_delta * -1
 theta_circ = unumpy.uarray(np.deg2rad(noms(theta_circ)), np.deg2rad(devs(theta_circ)))
 
 #
 
 I_lin = unumpy.uarray([0.117, 0.09, 0.066, 0.134, 0.183, 0.203, 0.236, 0.268, 0.216, 0.176, 0.087, 0.078, 0.155, 0.222],
                       0.002)
-theta_lin = unumpy.uarray(range(0, 4 * len(noms(I_lin) + 4), 4), 1) * angle_delta
+theta_lin = unumpy.uarray(range(0, 4 * len(noms(I_lin) + 4), 4), 1) * angle_delta * -1
 theta_lin = unumpy.uarray(np.deg2rad(noms(theta_lin)), np.deg2rad(devs(theta_lin)))
 
 #
 fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-ax.plot(noms(theta_circ), noms(I_circ), 'bo')
+ax.errorbar(noms(theta_circ), noms(I_circ), xerr=devs(theta_circ), yerr=devs(I_circ), fmt='bo')
 ax.grid(True)
 plt.show()
 
 fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-ax.plot(noms(theta_lin), noms(I_lin), 'bo')
+ax.errorbar(noms(theta_lin), noms(I_lin), xerr=devs(theta_lin), yerr=devs(I_lin), fmt='bo')
 ax.grid(True)
 plt.show()
+
+d_dphi = ufloat(2.4, 0.1)*1e-2
+lamb_g_dphi = 1/sqrt(1/(lamb_manu**2)-1/((2*d_dphi)**2))
+dphi = 2*np.pi*L*((1/lamb_manu)-(1/lamb_g_dphi))
+
+d_dphi = ufloat(4.6, 0.1)*1e-2
+lamb_g_dphi = 1/sqrt(1/(lamb_manu**2)-1/((2*d_dphi)**2))
+dphi = 2*np.pi*L*((1/lamb_manu)-(1/lamb_g_dphi))
+
+theta = np.arange(0, 2+1/16, 1/16) * np.pi
+
+Ex = np.sin(theta)
+Ey = np.sin(theta+ np.pi/2 + 0.1)
+arg = np.arctan2(Ey, Ex)
+amp = np.sqrt(Ex**2 + Ey**2)
+I_circ_theo = np.array([1/(2*np.pi)*cumtrapz((amp*np.cos(arg-pos))**2, theta)[-1] for pos in theta])
+
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, np.max(noms(I_circ))/np.max(noms(I_circ_theo))*I_circ_theo, 'ro', label='theo')
+ax.errorbar(noms(theta_circ), noms(I_circ), xerr=devs(theta_circ), yerr=devs(I_circ), fmt='bo', label='data')
+ax.legend()
+ax.grid(True)
+plt.show()
+
+
+Ex = np.sin(theta)
+Ey = np.sin(theta+0.6)
+arg = np.arctan2(Ey, Ex)
+amp = np.sqrt(Ex**2 + Ey**2)
+I_lin_theo = np.array([1/(2*np.pi)*cumtrapz((amp*np.cos(arg-pos))**2, theta)[-1] for pos in theta])
+
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, np.max(noms(I_lin))/np.max(noms(I_lin_theo))*I_lin_theo, 'ro', label='theo')
+ax.errorbar(noms(theta_lin), noms(I_lin), xerr=devs(theta_lin), yerr=devs(I_lin), fmt='bo', label='data')
+ax.legend()
+ax.grid(True)
+plt.show()
+
 
 # %% michelson interferometer
 
