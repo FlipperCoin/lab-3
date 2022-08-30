@@ -3,7 +3,7 @@ from uncertainties import ufloat, unumpy
 from uncertainties.unumpy import uarray
 from uncertainties.unumpy import nominal_values as noms
 from uncertainties.unumpy import std_devs as devs
-from uncertainties.umath import sqrt
+from uncertainties.umath import sqrt, tan
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
 from scipy.constants import k
@@ -15,6 +15,8 @@ from scipy.constants import k
 #%% reflection
 
 # calc n
+theta_B = ufloat(0, 0)
+n = tan(theta_B)
 
 #%% diffraction - single slit
 
@@ -44,7 +46,7 @@ x = uarray([], [])
 a_meas_2 = ufloat(0, 0)
 a_list = [a_meas, a_meas_2]
 for a in a_list:
-    X = a * unumpy.sin(unumpy.arctan(x/L)) / lambd
+    X = a * unumpy.sin(unumpy.arctan2(x/L)) / lambd
     I = (unumpy.sin(np.pi*X)**2) / ((np.pi*X)**2)
     plt.plot(x, I)
     plt.show()
