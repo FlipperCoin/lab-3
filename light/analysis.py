@@ -15,14 +15,14 @@ from scipy.constants import k
 #%% reflection
 
 # calc n
-theta_B = ufloat(0, 0)
+theta_B = ufloat(np.deg2rad(57), np.deg2rad(5))
 n = tan(theta_B)
 
 #%% diffraction - single slit
 
-L = ufloat(0, 0)
-screw_val = ufloat(0, 0)
-a_meas = ufloat(0, 0)
+L = ufloat(35+18+33*5, 0)
+screw_val = ufloat(8, 1)
+a_meas = ufloat(27, 1) - screw_val
 lambd = ufloat(0, 0)
 
 minimums = uarray([],
@@ -43,7 +43,7 @@ plt.show()
 a_calc = lambd / ufloat(reg.slope, reg.stderr)
 
 x = uarray([], [])
-a_meas_2 = ufloat(0, 0)
+a_meas_2 = ufloat(11, 1) - screw_val
 a_list = [a_meas, a_meas_2]
 for a in a_list:
     X = a * unumpy.sin(unumpy.arctan2(x/L)) / lambd
