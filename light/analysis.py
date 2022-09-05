@@ -100,7 +100,7 @@ lambd0 = ufloat(532, 1) * 1e-9
 
 p_lab = ufloat(747, 1) # torr, mmHg
 T_lab = ufloat(24.7 + 273.15, 0)
-L = ufloat(24.5, 0.5)
+L = ufloat(24.5, 0.5) * 1e-2
 
 gas = {'air': {}, 'He': {}, 'CO2': {}, 'He_CO2': {}}
 
@@ -120,6 +120,8 @@ gas['CO2']['p_min'] = ufloat(34, 1)
 # prob: 92->104,
 gas['CO2']['F'] = uarray([2,  3,  5,  8,  11, 16,  18,  22,  27,  38,  48,  60,  70,  81,  92,  104, 114, 124, 134, 145, 155, 165, 171], 0)
 gas['CO2']['p'] = uarray([39, 44, 56, 69, 86, 122, 129, 146, 168, 216, 267, 303, 345, 391, 432, 478, 519, 561, 603, 643, 686, 728, 752], perr)
+gas['CO2']['F'] = gas['CO2']['F'][5:]
+gas['CO2']['p'] = gas['CO2']['p'][5:]
 gas['CO2']['n_literature'] = ufloat(1.000448, 6e-6)
 
 gas['He_CO2']['p_min'] = ufloat(36, 0)
@@ -133,12 +135,15 @@ for g in gas.keys():
     gas[g]['alpha'] = (2*k*T_lab*lambd0/L) / ufloat(reg4.slope, reg4.stderr)
     plt.errorbar(noms(Fn), noms(gas[g]['p']), yerr=devs(gas[g]['p']), xerr=devs(Fn), fmt='bo', label='data')
     plt.plot(noms(Fn), noms(Fn)*reg4.slope+reg4.intercept, label='fit')
+    plt.xlabel(r'number of destructive interference lines $\left[ 1 \right]$')
+    plt.ylabel(r'pressure $\left[ mmHg \right]$')
     plt.grid()
     plt.legend()
+    plt.savefig(f'{g}.png')
     plt.show()
 
     # TODO: check about 76cmHg
-    gas[g]['n_T0_p76'] = 1 + gas[g]['alpha']*76/(2*k*273.15)
+    gas[g]['n_T0_p76'] = 1 + gas[g]['alpha']*760/(2*k*273.15)
 
 # N_He / N_CO2
 gas['He_CO2']['ratio'] = (gas['He']['n_literature'] - gas['He_CO2']['n_T0_p76']) / \
