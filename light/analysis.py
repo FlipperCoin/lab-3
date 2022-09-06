@@ -98,7 +98,7 @@ from scipy.constants import k
 
 lambd0 = ufloat(532, 1) * 1e-9
 
-p_lab = ufloat(747, 1) # torr, mmHg
+p_lab = ufloat(747, 1)  # torr, mmHg
 T_lab = ufloat(24.7 + 273.15, 0)
 L = ufloat(24.5, 0.5) * 1e-2
 
@@ -129,7 +129,6 @@ gas['He_CO2']['F'] = uarray([5,  15,  20,  25,  30,  35,  41,  45,  51,  55,  60
 gas['He_CO2']['p'] = uarray([70, 175, 227, 277, 330, 383, 448, 489, 551, 594, 646, 700, 731, 742], perr)
 
 for g in gas.keys():
-    # TODO: maybe remove '+1'
     Fn = gas[g]['F']
     reg4 = linregress(noms(Fn), noms(gas[g]['p']))
     gas[g]['alpha'] = (2*k*T_lab*lambd0/L) / ufloat(reg4.slope, reg4.stderr)
@@ -142,10 +141,18 @@ for g in gas.keys():
     plt.savefig(f'{g}.png')
     plt.show()
 
-    # TODO: check about 76cmHg
     gas[g]['n_T0_p76'] = 1 + gas[g]['alpha']*760/(2*k*273.15)
+    if 'n_literature' in gas[g]:
+        gas[g]['rel_err'] = 100 * np.abs(((gas[g]['n_T0_p76'] - gas[g]['n_literature']) / gas[g]['n_literature']).nominal_value)
 
 # N_He / N_CO2
 gas['He_CO2']['ratio'] = (gas['He']['n_literature'] - gas['He_CO2']['n_T0_p76']) / \
                          (gas['He_CO2']['n_T0_p76'] - gas['CO2']['n_literature'])
+# N_He / N_air
+gas['He']['ratio'] = (gas['He']['n_literature'] - gas['He']['n_T0_p76']) / \
+                         (gas['He']['n_T0_p76'] - gas['air']['n_literature'])
+
+# N_CO2 / N_air
+gas['CO2']['ratio'] = (gas['CO2']['n_literature'] - gas['CO2']['n_T0_p76']) / \
+                         (gas['CO2']['n_T0_p76'] - gas['air']['n_literature'])
 
