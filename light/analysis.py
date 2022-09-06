@@ -96,10 +96,10 @@ from scipy.constants import k
 
 #%% interferometer
 
-lambd0 = ufloat(532, 1) * 1e-9
+lambd0 = ufloat(532, 0) * 1e-9
 
 p_lab = ufloat(747, 1)  # torr, mmHg
-T_lab = ufloat(24.7 + 273.15, 0)
+T_lab = ufloat(24.7 + 273.15, 0.1)
 L = ufloat(24.5, 0.5) * 1e-2
 
 gas = {'air': {}, 'He': {}, 'CO2': {}, 'He_CO2': {}}
@@ -145,14 +145,14 @@ for g in gas.keys():
     if 'n_literature' in gas[g]:
         gas[g]['rel_err'] = 100 * np.abs(((gas[g]['n_T0_p76'] - gas[g]['n_literature']) / gas[g]['n_literature']).nominal_value)
 
-# N_He / N_CO2
+# N_CO2 / N_He
 gas['He_CO2']['ratio'] = (gas['He']['n_literature'] - gas['He_CO2']['n_T0_p76']) / \
                          (gas['He_CO2']['n_T0_p76'] - gas['CO2']['n_literature'])
-# N_He / N_air
+# N_air / N_He
 gas['He']['ratio'] = (gas['He']['n_literature'] - gas['He']['n_T0_p76']) / \
                          (gas['He']['n_T0_p76'] - gas['air']['n_literature'])
 
-# N_CO2 / N_air
+# N_air / N_CO2
 gas['CO2']['ratio'] = (gas['CO2']['n_literature'] - gas['CO2']['n_T0_p76']) / \
                          (gas['CO2']['n_T0_p76'] - gas['air']['n_literature'])
 
