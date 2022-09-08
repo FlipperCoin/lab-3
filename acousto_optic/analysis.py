@@ -7,6 +7,9 @@ from uncertainties.umath import sqrt, tan
 import matplotlib.pyplot as plt
 from scipy.stats import linregress
 from scipy.optimize import curve_fit
+from scipy.fft import ifft, fft
+from scipy import misc
+import imageio
 from scipy.constants import k
 
 lambd = ufloat(632.8, 0.1) * 1e-9
@@ -61,4 +64,18 @@ plt.legend()
 plt.grid()
 plt.show()
 
+i = imageio.imread("tst.tif")
+plt.imshow(i)
+plt.show()
 
+inverse = np.abs(ifft(i))
+plt.imshow(inverse.astype('uint8'))
+plt.show()
+
+i2 = imageio.imread("tst2.tif")
+plt.imshow(i2)
+plt.show()
+
+inverse2 = np.abs(fft(i2))
+plt.imshow(inverse2.astype('uint8'))
+plt.show()
