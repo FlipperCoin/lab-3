@@ -131,6 +131,7 @@ gas['He_CO2']['p'] = uarray([70, 175, 227, 277, 330, 383, 448, 489, 551, 594, 64
 for g in gas.keys():
     Fn = gas[g]['F']
     reg4 = linregress(noms(Fn), noms(gas[g]['p']))
+    gas[g]['alpha_pa'] = (2*k*T_lab*lambd0/L) / (133.322 * ufloat(reg4.slope, reg4.stderr))
     gas[g]['alpha'] = (2*k*T_lab*lambd0/L) / ufloat(reg4.slope, reg4.stderr)
     plt.errorbar(noms(Fn), noms(gas[g]['p']), yerr=devs(gas[g]['p']), xerr=devs(Fn), fmt='bo', label='data')
     plt.plot(noms(Fn), noms(Fn)*reg4.slope+reg4.intercept, label='fit')
