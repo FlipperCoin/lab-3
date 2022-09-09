@@ -39,7 +39,8 @@ nf_v = 2*m
 plt.errorbar(noms(nf_f), noms(nf_delta_x), xerr=devs(nf_f), yerr=devs(nf_delta_x), fmt='bo', label='data')
 plt.plot(noms(nf_f), fit_func(noms(nf_f), m.nominal_value), label='fit')
 plt.xlabel(r'f $\left[ Hz \right]$')
-plt.ylabel(r'$\overline{\Delta x}$ $\left[ m \right]$')
+plt.ylabel(r'$\overline{\Delta x}$  $\left[ m \right]$')
+plt.ticklabel_format(axis='y', scilimits=[-4, -4])
 plt.legend()
 plt.grid()
 plt.show()
@@ -50,10 +51,11 @@ f3 = ufloat(300, 1) * 1e-3
 
 # should be same values as in NF, but only in case they give a clear picture
 ff_f = uarray([1.5792400,   1.7001300, 1.8004300, 1.8914300, 2.1667300, 2.2283300, 2.4196500, 2.6792300, 2.8692300, 3.7596400], 0.00002) *1e6
-ff_delta_x = uarray([110/2, 119/2,     127/2,     136/2,     151/2,     149/2,     167/2,     184/2,     198/2,     262/2 ], 2) * 5.2e-6
+ff_delta_x = uarray([110/2, 119/2,     127/2,     136/2,     151/2,     149/2,     167/2,     184/2,     198/2,     262/2 ], 6) * 5.2e-6
 
-ff_f = ff_f[:-1]
-ff_delta_x = ff_delta_x[:-1]
+# uarray([104/2, 114/2,     125/2,     130/2,     147/2,     149/2,     165/2,     181/2,     198/2,     262/2 ], 2) * 5.2e-6
+# ff_f = ff_f[:-1]
+# ff_delta_x = ff_delta_x[:-1]
 
 # dx = f3*lambda/v * f
 # reg = linregress(noms(ff_f), noms(ff_delta_x))
@@ -70,7 +72,8 @@ ff_v = (f3*lambd)/ff_m
 plt.errorbar(noms(ff_f), noms(ff_delta_x), xerr=devs(ff_f), yerr=devs(ff_delta_x), fmt='bo', label='data')
 plt.plot(noms(ff_f), popt[0] + popt[1]*noms(ff_f), label='fit')
 plt.xlabel(r'f $\left[ Hz \right]$')
-plt.ylabel(r'$\overline{\Delta x}$ $\left[ m \right]$')
+plt.ylabel(r'$\overline{\Delta x}$  $\left[ m \right]$')
+plt.ticklabel_format(axis='y', scilimits=[-4, -4])
 plt.legend()
 plt.grid()
 plt.show()
