@@ -52,6 +52,8 @@ f3 = ufloat(300, 1) * 1e-3
 # should be same values as in NF, but only in case they give a clear picture
 ff_f = uarray([1.5792400,   1.7001300, 1.8004300, 1.8914300, 2.1667300, 2.2283300, 2.4196500, 2.6792300, 2.8692300, 3.7596400], 0.00002) *1e6
 ff_delta_x = uarray([110/2, 119/2,     127/2,     136/2,     151/2,     149/2,     167/2,     184/2,     198/2,     262/2 ], 6) * 5.2e-6
+ff_delta_x_max = ff_delta_x + np.linspace(-3, 3, len(ff_delta_x)) * 5.2e-6
+ff_delta_x_min = ff_delta_x - np.linspace(-3, 3, len(ff_delta_x)) * 5.2e-6
 
 # uarray([104/2, 114/2,     125/2,     130/2,     147/2,     149/2,     165/2,     181/2,     198/2,     262/2 ], 2) * 5.2e-6
 # ff_f = ff_f[:-1]
@@ -69,8 +71,29 @@ ff_m = ufloat(popt[1], np.sqrt(pcov[1][1]))
 
 ff_v = (f3*lambd)/ff_m
 
+popt_max, pcov_max = curve_fit(lin_fit, noms(ff_f), noms(ff_delta_x_max), sigma=devs(ff_delta_x_max))
+ff_m_max = ufloat(popt_max[1], np.sqrt(pcov_max[1][1]))
+
+ff_v_max = (f3*lambd)/ff_m_max
+
+popt_min, pcov_min = curve_fit(lin_fit, noms(ff_f), noms(ff_delta_x_min), sigma=devs(ff_delta_x_min))
+ff_m_min = ufloat(popt_min[1], np.sqrt(pcov_min[1][1]))
+
+ff_v_min = (f3*lambd)/ff_m_min
+
 plt.errorbar(noms(ff_f), noms(ff_delta_x), xerr=devs(ff_f), yerr=devs(ff_delta_x), fmt='bo', label='data')
 plt.plot(noms(ff_f), popt[0] + popt[1]*noms(ff_f), label='fit')
+plt.xlabel(r'f $\left[ Hz \right]$')
+plt.ylabel(r'$\overline{\Delta x}$  $\left[ m \right]$')
+plt.ticklabel_format(axis='y', scilimits=[-4, -4])
+plt.legend()
+plt.grid()
+plt.show()
+
+plt.errorbar(noms(ff_f), noms(ff_delta_x), xerr=devs(ff_f), yerr=devs(ff_delta_x), fmt='bo', label='data')
+plt.plot(noms(ff_f), popt[0] + popt[1]*noms(ff_f), label='fit')
+# plt.plot(noms(ff_f), popt_max[0] + popt_max[1]*noms(ff_f), label='fit_max')
+plt.plot(noms(ff_f), popt_min[0] + popt_min[1]*noms(ff_f), label='fit_min')
 plt.xlabel(r'f $\left[ Hz \right]$')
 plt.ylabel(r'$\overline{\Delta x}$  $\left[ m \right]$')
 plt.ticklabel_format(axis='y', scilimits=[-4, -4])
