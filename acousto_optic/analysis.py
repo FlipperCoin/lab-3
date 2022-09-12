@@ -26,7 +26,7 @@ nf_f = uarray([2.1667300,    1.8914300, 1.8004300, 1.7001300, 2.6792300, 2.86923
 sort = np.argsort(noms(nf_f))
 nf_f = np.take(nf_f, sort)
 # first 3 might need diff denu
-nf_delta_x = uarray([575/11, 526/9,     561/9,     802/12,    510/12,    514/13,    553/11,    519/11,     418/14,    498/7], 2) * 5.2e-6
+nf_delta_x = uarray([575/11, 526/9,     561/9,     802/12,    510/12,    514/13,    553/11,    519/11,     418/14,    498/7], 1) * 5.2e-6
 nf_delta_x = np.take(nf_delta_x, sort)
 # dx = lambda/2 = v/(2f)
 def fit_func(f, m):
